@@ -246,7 +246,8 @@ class OneImageViewController: UIViewController, UIScrollViewDelegate {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
         imageView.clipsToBounds = true
-        imageView.sd_setImage(with: URL(string: url),
+        let sUrl = url.replacingOccurrences(of: "capacitor://localhost/_capacitor_file_", with: "")
+        imageView.sd_setImage(with: URL(fileURLWithPath: sUrl),
                               placeholderImage: nil)
         if let image = imageView.image {
             if let data = image.jpegData(compressionQuality:
