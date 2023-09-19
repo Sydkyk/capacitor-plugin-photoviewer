@@ -18,14 +18,21 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 @CapacitorPlugin(
-    name = "PhotoViewer",
-    permissions = { @Permission(alias = PhotoViewerPlugin.MEDIAIMAGES, strings = { Manifest.permission.READ_EXTERNAL_STORAGE }) }
+        name = "PhotoViewer",
+        permissions = {
+                @Permission(alias = PhotoViewerPlugin.MEDIAIMAGES,
+                        strings = { Manifest.permission.READ_MEDIA_IMAGES }),
+
+                @Permission(alias = PhotoViewerPlugin.READ_EXTERNAL_STORAGE,
+                        strings = { Manifest.permission.READ_EXTERNAL_STORAGE })
+        }
 )
 public class PhotoViewerPlugin extends Plugin {
 
     // Permission alias constants
     private static final String PERMISSION_DENIED_ERROR = "Unable to access media images, user denied permission request";
     static final String MEDIAIMAGES = "images";
+    static final String READ_EXTERNAL_STORAGE = "read_external_storage";
 
     private static final String TAG = "CapacitorPhotoViewer";
 
@@ -40,18 +47,31 @@ public class PhotoViewerPlugin extends Plugin {
 
     @PermissionCallback
     private void imagesPermissionsCallback(PluginCall call) {
-        if (getPermissionState(MEDIAIMAGES) == PermissionState.GRANTED) {
-            isPermissions = true;
-            show(call);
-        } else {
-            call.reject(PERMISSION_DENIED_ERROR);
+        if (Build.VERSION.SDK_INT >= 33) {
+            if (getPermissionState(MEDIAIMAGES) == PermissionState.GRANTED) {
+                isPermissions = true;
+                show(call);
+            } else {
+                call.reject(PERMISSION_DENIED_ERROR);
+            }
+        } else  if (Build.VERSION.SDK_INT >= 29 && Build.VERSION.SDK_INT < 33) {
+            if (getPermissionState(READ_EXTERNAL_STORAGE) == PermissionState.GRANTED) {
+                isPermissions = true;
+                show(call);
+            } else {
+                call.reject(PERMISSION_DENIED_ERROR);
+            }
         }
     }
 
     private boolean isImagesPermissions() {
-        // required for build version >= 29
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        if (Build.VERSION.SDK_INT >= 33) {
             if (getPermissionState(MEDIAIMAGES) != PermissionState.GRANTED) {
+                return false;
+            }
+        } else if (Build.VERSION.SDK_INT >= 29 && Build.VERSION.SDK_INT < 33) {
+
+            if (getPermissionState(READ_EXTERNAL_STORAGE) != PermissionState.GRANTED) {
                 return false;
             }
         }
@@ -126,24 +146,24 @@ public class PhotoViewerPlugin extends Plugin {
                 AddObserversToNotificationCenter();
 
                 bridge
-                    .getActivity()
-                    .runOnUiThread(
-                        () -> {
-                            try {
-                                if (images.length() <= 1 && (finalMode.equals("gallery") || finalMode.equals("slider"))) {
-                                    String msg = "Show : imageList must be greater that one ";
-                                    msg += "for Mode " + finalMode;
-                                    rHandler.retResult(call, false, msg);
-                                    return;
+                        .getActivity()
+                        .runOnUiThread(
+                                () -> {
+                                    try {
+                                        if (images.length() <= 1 && (finalMode.equals("gallery") || finalMode.equals("slider"))) {
+                                            String msg = "Show : imageList must be greater that one ";
+                                            msg += "for Mode " + finalMode;
+                                            rHandler.retResult(call, false, msg);
+                                            return;
+                                        }
+                                        implementation.show(images, finalMode, finalStartFrom, finalOptions);
+                                        rHandler.retResult(call, true, null);
+                                        return;
+                                    } catch (Exception e) {
+                                        rHandler.retResult(call, false, e.getMessage());
+                                    }
                                 }
-                                implementation.show(images, finalMode, finalStartFrom, finalOptions);
-                                rHandler.retResult(call, true, null);
-                                return;
-                            } catch (Exception e) {
-                                rHandler.retResult(call, false, e.getMessage());
-                            }
-                        }
-                    );
+                        );
             } catch (Exception e) {
                 String msg = "Show: " + e.getMessage();
                 rHandler.retResult(call, false, msg);
@@ -154,21 +174,21 @@ public class PhotoViewerPlugin extends Plugin {
 
     private void AddObserversToNotificationCenter() {
         NotificationCenter
-            .defaultCenter()
-            .addMethodForNotification(
-                "photoviewerExit",
-                new MyRunnable() {
-                    @Override
-                    public void run() {
-                        JSObject data = new JSObject();
-                        data.put("result", this.getInfo().get("result"));
-                        data.put("imageIndex", this.getInfo().get("imageIndex"));
-                        data.put("message", this.getInfo().get("message"));
-                        NotificationCenter.defaultCenter().removeAllNotifications();
-                        notifyListeners("jeepCapPhotoViewerExit", data);
-                        return;
-                    }
-                }
-            );
+                .defaultCenter()
+                .addMethodForNotification(
+                        "photoviewerExit",
+                        new MyRunnable() {
+                            @Override
+                            public void run() {
+                                JSObject data = new JSObject();
+                                data.put("result", this.getInfo().get("result"));
+                                data.put("imageIndex", this.getInfo().get("imageIndex"));
+                                data.put("message", this.getInfo().get("message"));
+                                NotificationCenter.defaultCenter().removeAllNotifications();
+                                notifyListeners("jeepCapPhotoViewerExit", data);
+                                return;
+                            }
+                        }
+                );
     }
 }

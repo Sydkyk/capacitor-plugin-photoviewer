@@ -41,7 +41,7 @@ On iOS plugin, the creation of a movie from the pictures stored in the <strong>A
   <a href="https://www.npmjs.com/package/@capacitor-community/photoviewer"><img src="https://img.shields.io/npm/dw/@capacitor-community/photoviewer?style=flat-square" /></a>
   <a href="https://www.npmjs.com/package/@capacitor-community/photoviewer"><img src="https://img.shields.io/npm/v/@capacitor-community/photoviewer?style=flat-square" /></a>
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-<a href="#contributors-"><img src="https://img.shields.io/badge/all%20contributors-5-orange?style=flat-square" /></a>
+<a href="#contributors-"><img src="https://img.shields.io/badge/all%20contributors-6-orange?style=flat-square" /></a>
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 </p>
 <br>
@@ -96,9 +96,11 @@ npx cap sync
 ```js
 ...
 buildscript {
-    ext.kotlin_version = '1.6.10'
+    ext.kotlin_version = '1.8.20'
     dependencies {
         ...
+        classpath 'com.android.tools.build:gradle:8.0.0'
+        classpath 'com.google.gms:google-services:4.3.15'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
@@ -126,7 +128,7 @@ buildscript {
         ```
     - in the `dependencies` block add
         ```
-        implementation "androidx.core:core-ktx:1.6.0"
+        implementation "androidx.core:core-ktx:1.10.0"
         implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
         ```
 
@@ -222,6 +224,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   <a href="https://github.com/rdlabo" title="rdlabo"><img src="https://github.com/rdlabo.png?size=100" width="50" height="50" /></a>
   <a href="https://github.com/bozhidarc" title="bozhidarc"><img src="https://github.com/bozhidarc.png?size=100" width="50" height="50" /></a>
   <a href="https://github.com/adnbrownie" title="adnbrownie"><img src="https://github.com/adnbrownie.png?size=100" width="50" height="50" /></a>
+  <a href="https://github.com/chiraganand" title="chiraganand"><img src="https://github.com/chiraganand.png?size=100" width="50" height="50" /></a>
 </p>
 
 <!-- markdownlint-enable -->

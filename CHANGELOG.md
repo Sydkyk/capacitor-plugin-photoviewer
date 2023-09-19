@@ -1,3 +1,33 @@
+# 3.0.3 (2023-09-17)
+
+## Bug fixes
+
+ - Android fix closing with transition issue#38
+ - Android fix App in prod calls ANR when user exits from image viewer issue#48
+ - Android fix Image title on Android issue#39
+ - Android fix Close button stops working after device is rotated issue#50
+
+# 3.0.2 (2023-09-16)
+
+## Bug fixes
+
+ - Fix Web listener `jeepCapPhotoViewerExit`not fired.
+
+# 3.0.1 (2023-09-12)
+
+### Chore
+
+ - Update to @capacitor/core 5.3.0
+ - Update to @capacitor/ios 5.3.0
+ - Update to @capacitor/android 5.3.0
+
+## Bug fixes
+
+ - Fix request READ_MEDIA_IMAGES permission for Android SDK >= 33 PR#46 from Chirag Anand
+ - Fix Kotlin Version for Capacitor in README.md PR#47 from Chirag Anand
+
+# 3.0.0 (2023-05-22)
+
 # 3.0.0-beta.1 (2023-05-21)
 
 ## Bug fixes
